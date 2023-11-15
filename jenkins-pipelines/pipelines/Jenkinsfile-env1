@@ -1,0 +1,50 @@
+pipeline {
+  agent any
+  environment {
+    COURSE_NAME = "DevOps"
+  }
+
+  parameters {
+    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+
+    text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+
+    booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+
+    choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+
+    password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+  }
+
+  options { disableConcurrentBuilds() }
+
+  stages {
+
+    stage('One') {
+      steps {
+        sh 'echo COURSE NAME = ${COURSE_NAME}, Session Time = ${SESSION_TIME}'
+      }
+    }
+
+    stage('Two') {
+      environment {
+        SESSION_TIME = "6AM IST"
+      }
+      steps {
+        sh 'echo COURSE NAME = ${COURSE_NAME}, Session Time = ${SESSION_TIME}'
+      }
+    }
+
+    stage('Three') {
+      environment {
+        SSH = credentials('CENTOS')
+      }
+      steps {
+        sh 'echo ${SSH} | base64'
+        sh 'echo ${PERSON}'
+      }
+    }
+
+  }
+
+}

@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+
+  stages {
+
+    stage('Step1') {
+      parallel {
+        stage('Step 1-1') {
+          steps {
+            sh 'sleep 100 ; echo One-One'
+          }
+        }
+
+        stage('Step 1-2') {
+          steps {
+            sh 'sleep 120; echo One-Two'
+          }
+        }
+      }
+    }
+
+    stage('Step2') {
+      steps {
+        sh 'echo Two'
+      }
+    }
+
+
+  }
+}

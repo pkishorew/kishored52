@@ -1,0 +1,36 @@
+pipeline {
+  agent any
+
+  parameters {
+    string(name: 'DEPLOY_TO', defaultValue: 'main', description: '')
+  }
+
+  stages {
+
+    stage('One') {
+      steps {
+        sh 'env'
+      }
+    }
+
+    stage('Dev') {
+        when {
+            expression { env.DEPLOY_TO ==~ /(production|main)/ }
+        }
+
+      steps {
+        sh 'echo Dev'
+      }
+    }
+
+    stage('Prod') {
+      when {
+        branch 'production'
+      }
+      steps {
+        sh 'echo Prod'
+      }
+    }
+
+  }
+}

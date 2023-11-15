@@ -1,0 +1,22 @@
+pipeline {
+  agent any
+
+  stages {
+
+    stage('One') {
+      steps {
+        sh 'true'
+      }
+    }
+  }
+
+  post {
+    failure {
+      slackSend color: "bad", message: "Job Failed"
+    }
+
+    success {
+      slackSend color: "good", message: "Job Success"
+    }
+  }
+}

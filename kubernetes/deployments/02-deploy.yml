@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-rs2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      volumes:
+        - name: sample-config
+          configMap:
+            name: sample-config
+      containers:
+        - name: nginx
+          image: nginx:latest
+          env:
+            - name: COURSE
+              valueFrom:
+                configMapKeyRef:
+                  key: COURSE
+                  name: course-details
+          envFrom:
+            - configMapRef:
+                name: course-details
+            - secretRef:
+                name: secret01
+          volumeMounts:
+            - mountPath: /config
+              name: sample-config
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: course-details
+data:
+  COURSE: DEVOPS
+  MONTH: JAN
+  TRAINER: RAGHU
+  TIMINGS: 6AM
+  DURATION: 70DAYS
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-config
+data:
+  CONFIG: |
+    COURSE=DEVOPS
+    MONTH=JAN
+    TRAINER=RAGHU
+    TIMINGS=6AM
+    DURATION=70days
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret01
+data:
+  USERNAME: YWRtaW5zdHJhdG9y
+  PASSWORD: QWJjZEAxMjM=
+
